@@ -7,7 +7,7 @@ const baseUrl = isDev ? "http://gps-env-dev.us-west-2.elasticbeanstalk.com" : "h
 
 const options = {
   method: "POST",
-  url: `${baseUrl}/api/orders/externalorder",
+  url: `${baseUrl}/api/externalorders/create",
   headers: {
     "Content-Type": "application/json",
     "Access-Token": "5c23b2cf-6b02-411c-b3b2-6c223422fc6g", //the access token provided to the vendor by GPS. This is unique and should not be shared
