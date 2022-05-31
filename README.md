@@ -3,7 +3,7 @@
 ## Example post
 ```
 //use dev for testing purposes. use production when ready
-const baseUrl = isDev ? "http://gps-env-dev.us-west-2.elasticbeanstalk.com" : "http://gps-env.arixwpxqr5.us-west-2.elasticbeanstalk.com"; 
+const baseUrl = "http://gps-env-dev.us-west-2.elasticbeanstalk.com"; 
 
 const options = {
   method: "POST",
@@ -23,7 +23,7 @@ const options = {
           weight: "5lbs", //optional | type: string
           notes: "Some notes",//optional | type: string
         },
-        billing: { //optional - but likely needed for this datacann communication
+        billing: { //optional
           amount: "bill amount", | type: string
           invoice: "invoice #", | type: string
           method: "billing method", | type: string
