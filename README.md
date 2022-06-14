@@ -20,7 +20,7 @@ const options = {
           pickupLN: "402-00001", //the vendor license number | type: string
           destinationLN: "313-00003", //the destination license number | type: string
           preferredDelivery: "2021-04-08T19:40:30.443Z", // the preferred delivery date | type: UTC date string
-          weight: "5lbs", //optional | type: string
+          weight: "5lbs", //optional, alias of boxCount | type: string
           notes: "Some notes",//optional | type: string
         },
         billing: { //optional
