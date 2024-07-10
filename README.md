@@ -3,7 +3,7 @@
 ## Example post
 ```
 //use dev for testing purposes. use production when ready
-const baseUrl = isDev ? "http://gps-env-dev.us-west-2.elasticbeanstalk.com" : "http://gps-env.arixwpxqr5.us-west-2.elasticbeanstalk.com"; 
+const baseUrl = isDev ? "http://dev.gpsorders.com" : "http://gpsorders.com"; 
 
 const options = {
   method: "POST",
