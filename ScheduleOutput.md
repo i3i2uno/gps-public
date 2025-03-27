@@ -19,6 +19,7 @@ const options = {
 ```
 
 ## Example response
+You will receive a response like the following, with 1 = Monday, 2 = Tuesday, etc...
 ```
 {
     "data": {
