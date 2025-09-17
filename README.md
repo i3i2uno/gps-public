@@ -7,7 +7,7 @@ const baseUrl = isDev ? "http://dev.gpsorders.com" : "http://gpsorders.com";
 
 const options = {
   method: "POST",
-  url: `${baseUrl}/api/orders/externalorders/create",
+  url: `${baseUrl}/api/externalorders/create",
   headers: {
     "Content-Type": "application/json",
     "Access-Token": "5c23b2cf-6b02-411c-b3b2-6c223422fc6g", //the access token provided to the vendor by GPS. This is unique and should not be shared
@@ -163,7 +163,7 @@ const baseUrl = isDev ? "http://dev.gpsorders.com" : "http://gpsorders.com";
 
 const options = {
   method: "POST",
-  url: `${baseUrl}/api/orders/externalorders/update",
+  url: `${baseUrl}/api/externalorders/update",
   headers: {
     "Content-Type": "application/json",
     "Access-Token": "5c23b2cf-6b02-411c-b3b2-6c223422fc6g", //the access token provided to the vendor by GPS. This is unique and should not be shared
