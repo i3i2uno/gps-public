@@ -195,6 +195,84 @@ const options = {
 
 The response should be very similar to above (when this endpoint is fully configured)
 
+## Example to get the latest information from an order
+```
+//use dev for testing purposes. use production when ready
+const baseUrl = isDev ? "http://dev.gpsorders.com" : "http://gpsorders.com"; 
+
+const options = {
+  method: "GET",
+  url: `${baseUrl}/api/orders/externalorder/orderid/403R-00467-5",
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Token": "5c23b2cf-6b02-411c-b3b2-6c223422fc6g", //the access token provided to the vendor by GPS. This is unique and should not be shared
+  }
+};
+```
+
+Example Response
+```
+{
+  "orders": [
+    {
+      "id": "ea7b46fd-be8c-45c2-95be-bbfa1f224147",
+      "userId": "a3647cc3-fcb2-4fdc-8564-56ad13177681",
+      "data": {
+        "ext": {
+          "name": "Greenlists",
+          "userId": "a3647cc3-fcb2-4fdc-8564-56ad13177681",
+          "approve": true,
+          "id": "EXTERNALID"
+        },
+        "billing": {
+          "amount": "bill amount",
+          "invoice": "GL Order #424",
+          "method": "billing method",
+          "manifest": "transfer template created"
+        },
+        "order": {
+          "orderType": "layover",
+          "pickupLN": "403R-00467",
+          "destinationLN": "403R-00953",
+          "preferredPickup": "2025-10-27T00:00:00.000Z",
+          "preferredDelivery": "2025-10-29T00:00:00+00:00",
+          "weight": 0,
+          "notes": "GL Order #424",
+          "pickupType": "layoverpickup",
+          "driver": {},
+          "status": "RECEIVED"
+        },
+        "destCompany": {
+          "Street Address": "60800 Highway 96 East",
+          "Licensee": "ANGEL FARMS LLC",
+          "License #": "403R-00953",
+          "DBA": "None",
+          "FacilityType": "Retail Marijuana Cultivation Facility",
+          "City": "Boone",
+          "Zip": "81025",
+          "DateUpdated": "2025-10-01"
+        },
+        "pickupCompany": {
+          "Street Address": "60710 Highway 96 East",
+          "Licensee": "BOONE FARMS LLC",
+          "License #": "403R-00467",
+          "DBA": "None",
+          "FacilityType": "Retail Marijuana Cultivation Facility",
+          "City": "Boone",
+          "Zip": "81025",
+          "DateUpdated": "2025-10-01"
+        }
+      },
+      "deleted": 0,
+      "orderId": "403R-00467-GREENLISTS-5",
+      "created": "2025-10-22T04:49:31.961Z",
+      "lastUpdated": "2025-10-22T04:49:31.961Z",
+      "deliveryDate": null
+    }
+  ]
+}
+```
+
 ## Status's
 The status keys. External orders will receive the status value that is listed in the "var" key shown below, ie `RECEIVED`
 ```
