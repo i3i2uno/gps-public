@@ -10,7 +10,7 @@ const options = {
   url: `${baseUrl}/api/driverschedule/output",
   headers: {
     "Content-Type": "application/json",
-    "Access-Token": "5c23b2cf-6b02-411c-b3b2-6c223422fc6g", //the access token provided to the vendor by GPS. This is unique and should not be shared
+    "Authorization": "5c23b2cf-6b02-411c-b3b2-6c223422fc6g", //the access token provided to the vendor by GPS. This is unique and should not be shared
   },
   body: JSON.stringify({
     "date": "2025-03-16T00:00:00.000Z" //this is a UTC date referencing the start of the week, ie sunday.
