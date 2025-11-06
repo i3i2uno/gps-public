@@ -216,11 +216,11 @@ Example Response
   "orders": [
     {
       "id": "ea7b46fd-be8c-45c2-95be-bbfa1f224147",
-      "userId": "a3647cc3-fcb2-4fdc-8564-56ad13177681",
+      "userId": "a3647cc3-fcb2-4fdc-8564-56ad13177682",
       "data": {
         "ext": {
-          "name": "Greenlists",
-          "userId": "a3647cc3-fcb2-4fdc-8564-56ad13177681",
+          "name": "example",
+          "userId": "a3647cc3-fcb2-4fdc-8564-56ad13177682",
           "approve": true,
           "id": "EXTERNALID"
         },
@@ -264,7 +264,7 @@ Example Response
         }
       },
       "deleted": 0,
-      "orderId": "403R-00467-GREENLISTS-5",
+      "orderId": "403R-00467-5",
       "created": "2025-10-22T04:49:31.961Z",
       "lastUpdated": "2025-10-22T04:49:31.961Z",
       "deliveryDate": null
