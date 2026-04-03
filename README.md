@@ -298,3 +298,153 @@ destination.EstimatedArrivalDateTime = data.order.deliveryDate
 transporter.EstimatedDepartureDateTime = data.order.deliveryDate
 transporter.EstimatedArrivalDateTime = data.order.pickupDate
 ```
+
+## Order Webhooks (Hooks)
+
+GPS can send real-time webhook notifications to your endpoint whenever an order is created, updated, or deleted. This allows you to keep your system in sync without polling.
+
+### How It Works
+
+When an order changes in GPS, our system automatically sends an HTTP POST request to your configured webhook URL with the full order data. Hooks are configured per-client and must be activated by GPS before they will fire.
+
+### When Hooks Fire
+
+Hooks are triggered on the following order events:
+
+| Event | Method | Description |
+|-------|--------|-------------|
+| **Create** | `create` | A new order is created in the system |
+| **Update** | `update` | Any change to an existing order (status change, driver assignment, date change, etc.) |
+| **Delete** | `delete` | An order is cancelled/deleted |
+
+These events cover the full lifecycle of an order — from initial creation through delivery or cancellation.
+
+### What You Receive
+
+When a hook fires, your endpoint will receive a `POST` request with a JSON body containing the full order object. The payload looks like this:
+
+```json
+{
+  "order": {
+    "id": "88a6be7d-eece-41c1-9d64-0b5b83752f22",
+    "userId": "d0102ab8-81ed-4eb0-ab98-5d26ee3906fd",
+    "orderId": "402-00001-EXT-8",
+    "data": {
+      "order": {
+        "orderType": "layover",
+        "pickupLN": "402-00001",
+        "destinationLN": "402-00002",
+        "preferredDelivery": "2024-07-17T19:52:56.513Z",
+        "preferredPickup": "2024-07-16T06:00:00.000Z",
+        "pickupDate": "2024-07-16T06:00:00.000Z",
+        "deliveryDate": "2024-07-17T19:52:56.513Z",
+        "weight": "5lbs",
+        "notes": "Some notes for test order",
+        "status": "APPROVED",
+        "driver": {
+          "pickup": {
+            "driver": {
+              "name": "Jonathan Goddard",
+              "phone": "(303) 472-3890",
+              "lic": "14-231-0691",
+              "email": "goddard92j@gmail.com"
+            },
+            "vehicle": {
+              "name": "Ford Transit",
+              "lic": "BSE-A35"
+            },
+            "route": {
+              "city": "Denver - Colfax/Speer",
+              "day": "tue",
+              "name": "Denver West"
+            }
+          },
+          "delivery": {
+            "driver": {
+              "name": "Jose Lopez",
+              "phone": "(720) 939-6029",
+              "lic": "09-215-0651",
+              "email": "lopezxxjose3@gmail.com"
+            },
+            "vehicle": {
+              "name": "Ram Promaster",
+              "lic": "AZQ-P53"
+            },
+            "route": {
+              "city": "Denver - City Park/Colfax",
+              "day": "wed",
+              "name": "Denver Central"
+            }
+          }
+        }
+      },
+      "billing": {
+        "amount": "bill amount",
+        "invoice": "invoice #",
+        "method": "billing method",
+        "manifest": "manifest number"
+      },
+      "destCompany": {
+        "Licensee": "ALTERNATIVE MEDICINE ON CAPITOL HILL LLC",
+        "License #": "402-00002",
+        "Street Address": "1301 North Marion Street",
+        "City": "Denver",
+        "Zip": "80218"
+      },
+      "pickupCompany": {
+        "Licensee": "ALLGREENS LLC",
+        "License #": "402-00001",
+        "Street Address": "762 North Kalamath Street",
+        "City": "Denver",
+        "Zip": "80204"
+      }
+    },
+    "created": "2024-07-10T22:34:33.669Z",
+    "lastUpdated": "2024-07-10T22:34:33.669Z"
+  }
+}
+```
+
+### Key Fields
+
+| Field | Description |
+|-------|-------------|
+| `order.id` | Unique GPS identifier for the order (GUID). Use this as your primary reference. |
+| `order.orderId` | Human-readable order ID |
+| `order.data.order.status` | Current order status (see Status values below) |
+| `order.data.order.driver.pickup` | Assigned pickup driver, vehicle, and route info |
+| `order.data.order.driver.delivery` | Assigned delivery driver, vehicle, and route info |
+| `order.data.order.pickupDate` | Scheduled pickup date |
+| `order.data.order.deliveryDate` | Scheduled delivery date |
+| `order.data.destCompany` | Destination company details |
+| `order.data.pickupCompany` | Pickup company details |
+| `order.data.billing` | Billing information (if provided) |
+
+### Common Update Scenarios
+
+The `update` hook fires in situations including but not limited to:
+
+- **Status change** — Order moves from `RECEIVED` → `APPROVED` → `PICKED_UP` → `IN_TRANSIT` → `DELIVERED`
+- **Driver assigned** — A driver/vehicle/route is assigned to the pickup or delivery leg
+- **Date change** — Pickup or delivery dates are modified
+- **Route change** — Order is moved to a different route
+- **Order details edited** — Notes, weight, billing info, or other fields are updated
+
+### Your Endpoint Requirements
+
+Your webhook endpoint should:
+
+1. Accept `POST` requests with a JSON body
+2. Respond with a `2xx` status code to acknowledge receipt
+3. Be publicly accessible (or accessible from GPS servers)
+
+If your endpoint returns an error or is unreachable, the failure is logged on our side. Hooks are fire-and-forget — there is no automatic retry, so if you need to recover missed updates you can use the `GET /api/externalorders/orderid/{orderId}` endpoint to fetch the latest order state.
+
+### Setup
+
+To enable webhooks for your account, contact GPS to provide:
+
+1. **Your webhook URL** — The endpoint where you want to receive order updates
+2. **Authentication** — Any auth headers or tokens your endpoint requires
+
+GPS will configure the hook on our side and activate it for your account.
