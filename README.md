@@ -156,7 +156,7 @@ This post will be done by the vendors side, to our api using their unique access
 ```
 This is the example response that is returned from our api. The client can use this information to update their records accordingly. The "id" is the unique identifier and is more reliable then the "orderId".
 
-## Example post to update order (This endpoint is in place, but not fully configured. Only response you will get is {  success: true })
+## Example post to update order
 ```
 //use dev for testing purposes. use production when ready
 const baseUrl = isDev ? "http://dev.gpsorders.com" : "http://gpsorders.com"; 
@@ -169,10 +169,15 @@ const options = {
     "Access-Token": "5c23b2cf-6b02-411c-b3b2-6c223422fc6g", //the access token provided to the vendor by GPS. This is unique and should not be shared
   },
   body: JSON.stringify({
-    orders: [ //an array of orders to create
+    orders: [ //an array of orders to update
       {
         order: {
-          extId: "9384798749837498", //external id that external vendor would use to track the order
+          // Identify the order to update by EITHER of these:
+          id: "88a6be7d-eece-41c1-9d64-0b5b83752f22", //our internal order id (the "id" from the create response) - most reliable
+          extId: "9384798749837498", //OR the external id you used when creating the order
+          // If both are supplied, "id" wins. The order must belong to the account tied to your Access-Token.
+
+          // Any of the following fields, when supplied, overwrite the stored value. Omitted fields are left unchanged.
           orderType: "layover", // oneOf ["layover", "dropoff", "sameday"] | type: string
           pickupLN: "402-00001", //the vendor license number | type: string
           destinationLN: "313-00003", //the destination license number | type: string
@@ -181,7 +186,7 @@ const options = {
           weight: "5lbs", //optional | type: string
           notes: "Some notes",//optional | type: string
         },
-        billing: { //optional - but likely needed for this datacann communication
+        billing: { //optional - merged onto any existing billing (only the keys you send are changed)
           amount: "bill amount", | type: string
           invoice: "invoice #", | type: string
           method: "billing method", | type: string
@@ -193,7 +198,23 @@ const options = {
 };
 ```
 
-The response should be very similar to above (when this endpoint is fully configured)
+Notes on update behavior:
+- Changing a scheduling field (orderType, pickup/destination LN, or a preferred date) re-runs auto-approval to recompute the route/driver/dates — but only while the order is still early (Order Received / Order Approved). Once an order is picked up, in transit, delivered, rejected, or cancelled, its scheduling is left untouched and only the supplied fields are saved.
+- The order's GPS-owned fields (status, assigned driver, computed pickup/delivery dates) are never set directly from your payload.
+
+### Example Response
+The response mirrors the create response: an array of the updated orders in the same shape as `createdOrders` (see above), under `updatedOrders`. Any orders that could not be matched (bad/unknown `id` or `extId`, or not on your account) are reported under `notFound`.
+```
+{
+  "updatedOrders": [
+    { /* same shape as a createdOrders[] entry above */ }
+  ],
+  "notFound": [
+    { "id": null, "extId": "9384798749837498" }
+  ]
+}
+```
+`notFound` is omitted when every order matched.
 
 ## Example to get the latest information from an order
 ```
